@@ -2,6 +2,8 @@
 #include <fstream>
 #include <string>
 #include <exception>
+#include <vector>
+#include <map>
 
 
 //'`~!@#$%^&*()-=+[{]}\\|;:\'",.<>/?'
@@ -9,9 +11,24 @@
 template<typename T>
 concept FileStream = std::same_as<T, std::ifstream> || std::same_as<T, std::ofstream>;
 
+class WordScore {
+    using type = unsigned int;
+    type freq = 0;
+    type deg = 0;
+public:
+    void incr_dif() { deg++ }
+
+    void incr_same() {freq++; deg++; }
+
+    double score() {
+        return static_cast<double>(deg) / freq;
+    }
+
+};
+
 //class RAKE {
-//    std::istream* isp;
-//    
+//    std::istream* isp_;
+//
 //};
 
 template<FileStream... Files>
