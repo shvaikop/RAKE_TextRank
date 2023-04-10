@@ -4,7 +4,7 @@
 #include <exception>
 #include <vector>
 #include <map>
-#include <set>
+#include <unordered_set>
 #include <filesystem>
 #include <cctype>
 
@@ -50,8 +50,8 @@ class RAKE {
     std::ostream& out_stream_;
     std::map<std::string, WordScore> word_scores_;
     std::vector<std::vector<std::string>> phrases_;
-    std::set<char> stop_chars;
-    std::set<std::string> stop_words;
+    std::unordered_set<char> stop_chars;
+    std::unordered_set<std::string> stop_words;
 
 public:
     // constuctor that sets the in_stream and the out_stream
@@ -84,12 +84,65 @@ public:
         }
     }
 
-    // TEST function
-    void print_stop_chars() {
-        for (auto elem : stop_chars) {
-            std::cout << elem << "  ";
+    void read_text() {
+        std::vector<std::string> phrase;
+        std::string word;
+        char c;
+        while (in_stream_.get(c)) {
+            if (!stop_chars.contains(c) && !std::isspace(c)) {
+                word += c;
+                continue;
+            }
+            // c is white space or stop_char
+            else if (word.empty()) {
+                continue;
+            }
+            // word is not empty
+            else if (std::isspace(c) and !stop_words.contains(word)) {
+                phrase.push_back(std::move(word));
+                word.clear();
+                continue;
+            }
+            // either c is a stop_char or word is a stop_word
+            else if (stop_words.contains(word)){
+                if (!phrase.empty()){
+                    phrases_.push_back(std::move(phrase));
+                    phrase.clear();
+                }
+                word.clear();
+                continue;
+            }
+            // c must be a stop_char
+            else if (stop_chars.contains(c)) {
+                phrase.push_back(std::move(word));
+                if (!phrase.empty()){
+                    phrases_.push_back(std::move(phrase));
+                    phrase.clear();
+                }
+                word.clear();
+            }
+
+            else {
+                // TODO throw exception
+            }
         }
-        out_stream_ << std::endl;
+
+        if (!word.empty() && !stop_words.contains(word)) {
+            phrase.push_back(std::move(word));
+        }
+
+        if (!phrase.empty()) {
+            phrases_.push_back(std::move(phrase));
+        }
+    }
+
+    void test_print() {
+        for (const auto& innerVec : phrases_) {
+            for (const auto& str : innerVec) {
+                std::cout << str << " ";
+            }
+            std::cout << std::endl;
+        }
     }
 };
 
@@ -134,12 +187,17 @@ int main(int argc, char* argv[]) {
         exit(1);
     }
 
-    RAKE rk;
+    RAKE rk(file_in);
     rk.load_stop_chars();
     rk.load_stop_words();
-    rk.print_stop_chars();
+    rk.read_text();
+    rk.test_print();
+//    rk.print_stop_chars();
 
     // Close all files if open
     close_files(file_in, file_out);
     return 0;
 }
+
+
+
