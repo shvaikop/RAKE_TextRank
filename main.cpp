@@ -14,7 +14,7 @@ constexpr char PATH_SEP = std::filesystem::path::preferred_separator;
 const std::string STOP_CHARS_PATH = "resources" + std::string(1, PATH_SEP) + "stopchars.txt";
 const std::string STOP_WORDS_PATH = "resources" + std::string(1, PATH_SEP) + "stopwords.txt";
 
-
+const std::unordered_set<char> sent_end_chars = {'.', '!', '?', ';'};
 
 
 int main(int argc, char* argv[]) {
@@ -56,13 +56,19 @@ int main(int argc, char* argv[]) {
         exit(1);
     }
 
+
+
+
     auto stop_chars = TextProcess::load_stop_chars(STOP_CHARS_PATH);
     auto stop_words = TextProcess::load_stop_words(STOP_WORDS_PATH);
-    auto phrases = TextProcess::read_text(file_in, stop_chars, stop_words);
+//    auto phrases = TextProcess::read_text_phrases(file_in, stop_chars, stop_words);
 
-    RAKE rk(std::move(phrases));
-    auto key_phrases = rk.get_key_phrases(1);
-    TextProcess::custom_print(key_phrases);
+    auto sentences = TextProcess::split_into_sentences(file_in, sent_end_chars);
+    auto processed_sentences = TextProcess::process_sentences(sentences, stop_chars, stop_words, sent_end_chars);
+
+//    RAKE rk(std::move(phrases));
+//    auto key_phrases = rk.get_key_phrases(1);
+//    TextProcess::custom_print(key_phrases);
 
     // Close all files if open
     FileProcess::close_files(file_in, file_out);

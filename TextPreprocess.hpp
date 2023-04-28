@@ -10,6 +10,9 @@
 #include "FileProcess.hpp"
 
 namespace TextProcess {
+    using strVec = std::vector<std::string>;
+    using phraseVector = std::vector< strVec >;
+
     // Input: path to file with stop_chars, Output: stop chars loaded into a set
     std::unordered_set<char> load_stop_chars(const std::string& chars_file_path) {
         std::unordered_set<char> stop_chars;
@@ -41,7 +44,7 @@ namespace TextProcess {
         return stop_words;
     }
 
-    std::vector<std::vector<std::string>> read_text(std::istream& in_stream, const std::unordered_set<char>& stop_chars, const std::unordered_set<std::string>& stop_words) {
+    std::vector<std::vector<std::string>> read_text_phrases(std::istream& in_stream, const std::unordered_set<char>& stop_chars, const std::unordered_set<std::string>& stop_words) {
         std::vector<std::vector<std::string>> phrases;
         std::vector<std::string> phrase;
         std::string word;
@@ -93,6 +96,68 @@ namespace TextProcess {
             phrases.push_back(std::move(phrase));
         }
         return phrases;
+    }
+
+    // Function that splits a text into sentences
+    std::vector<std::string> split_into_sentences(std::istream& in_stream, const std::unordered_set<char>& sent_end_chars) {
+        std::vector<std::string> sentences;
+        std::string sentence;
+        char c;
+        while (in_stream.get(c)) {
+            if ((std::isspace(c) && c != ' ') || c == '\0') {
+                continue;
+            }
+            sentence.push_back(c);
+            if (sent_end_chars.contains(c) && !sentence.empty() && sentence != " ") {
+                sentences.push_back(sentence);
+                sentence.clear();
+            }
+            else{
+                continue;
+            }
+        }
+        if (!sentence.empty() && sentence != " ") {
+            sentences.push_back(sentence);
+        }
+        return sentences;
+    }
+
+    // split a string (sentence) into a vector of words, removing stop_chars, stop_words
+    strVec proces_sentence(const std::string& sentence_in, const std::unordered_set<char>& stop_chars,
+                           const std::unordered_set<std::string>& stop_words) {
+        strVec sentence_out;
+        std::string word;
+        for (auto c : sentence_in) {
+            if (!stop_chars.contains(c) && !std::isspace(c)) {
+                word += std::tolower(c);
+                continue;
+            }
+            // c is white space or stop_char
+            else if (word.empty()) {
+                continue;
+            }
+
+            // word is not empty
+            if (!stop_words.contains(word)) {
+                sentence_out.push_back(std::move(word));
+            }
+            word.clear();
+        }
+        if (!word.empty() && !stop_words.contains(word)) {
+            sentence_out.push_back(std::move(word));
+        }
+        return sentence_out;
+    }
+
+    // split each sentence into a vector of words, remove stop_words, stop_chars
+    phraseVector process_sentences(const strVec& sentences, const std::unordered_set<char>& stop_chars,
+                                   const std::unordered_set<std::string>& stop_words,
+                                   const std::unordered_set<char>& sent_end_chars) {
+        phraseVector result;
+        for (auto& sent_in : sentences) {
+            result.push_back(proces_sentence(sent_in, stop_chars, stop_words));
+        }
+        return result;
     }
 
     void custom_print(const std::vector< std::vector<std::string> >& inpt) {
