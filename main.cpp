@@ -19,8 +19,10 @@ const std::unordered_set<char> sent_end_chars = {'.', '!', '?', ';'};
 
 struct TextRank_Node {
     double score;
+    double norm_constant;
     size_t sent_index;
     std::vector< std::pair<size_t, double> > edges;
+
 };
 
 class TextRank {
@@ -57,6 +59,16 @@ class TextRank {
         }
     }
 
+    void set_norm_constants() {
+        for (TextRank_Node& node: graph_) {
+            double sum = 0;
+            for (auto& edge_pair : node.edges) {
+                sum += edge_pair.second;
+            }
+            node.norm_constant = sum;
+        }
+    }
+
     void construct_graph() {
         size_t size = tokenized_sentences_.size();
         graph_.reserve(size);
@@ -64,6 +76,7 @@ class TextRank {
         for (size_t i = 0; i < size; i++) {
             graph_.emplace_back();
             graph_[i].sent_index = i;
+            graph_[i].norm_constant = 1;
             graph_[i].score = init_score;
         }
 
@@ -76,13 +89,39 @@ class TextRank {
                 }
             }
         }
-        normalize_graph_edges();
+        set_norm_constants();
+    }
+
+    double iteration(double d) {
+        double change = 0;
+        for (TextRank_Node& node : graph_) {
+            double old_score = node.score;
+            double new_score = 0;
+            for (const auto& edge_pair : node.edges) {
+                size_t edge_from = edge_pair.first;
+                double w = edge_pair.second / graph_[edge_from].norm_constant;
+                new_score += w * graph_[edge_from].score;
+            }
+            new_score *= d;
+            new_score += 1 - d;
+            node.score = new_score;
+            change += std::abs(new_score - old_score);
+        }
+        return change;
     }
 
 public:
     TextRank(phraseVector& tokenized_sentences) {
         tokenized_sentences_ = std::move(tokenized_sentences);
         construct_graph();
+    }
+
+    void iterate() {
+        double change = std::numeric_limits<double>::max();
+        while (change > 0.001) {
+            change = iteration(0.85);
+            std::cout << change << std::endl;
+        }
     }
 
 };
@@ -137,6 +176,7 @@ int main(int argc, char* argv[]) {
     auto sentences = TextProcess::split_into_sentences(file_in, sent_end_chars);
     auto processed_sentences = TextProcess::process_sentences(sentences, stop_chars, stop_words);
     TextRank tk(processed_sentences);
+    tk.iterate();
 
 //    RAKE rk(std::move(phrases));
 //    auto key_phrases = rk.get_key_phrases(1);
