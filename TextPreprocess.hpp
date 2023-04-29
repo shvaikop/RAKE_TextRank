@@ -104,7 +104,11 @@ namespace TextProcess {
         std::string sentence;
         char c;
         while (in_stream.get(c)) {
-            if ((std::isspace(c) && c != ' ') || c == '\0') {
+            if (c == '\0') {
+                continue;
+            }
+            if ((std::isspace(c))) {
+                sentence.push_back(' ');
                 continue;
             }
             sentence.push_back(c);
@@ -151,8 +155,7 @@ namespace TextProcess {
 
     // split each sentence into a vector of words, remove stop_words, stop_chars
     phraseVector process_sentences(const strVec& sentences, const std::unordered_set<char>& stop_chars,
-                                   const std::unordered_set<std::string>& stop_words,
-                                   const std::unordered_set<char>& sent_end_chars) {
+                                   const std::unordered_set<std::string>& stop_words) {
         phraseVector result;
         for (auto& sent_in : sentences) {
             result.push_back(proces_sentence(sent_in, stop_chars, stop_words));
