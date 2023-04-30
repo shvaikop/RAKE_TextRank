@@ -1,10 +1,32 @@
 #ifndef PROJECT_TEXTRANK_HPP
 #define PROJECT_TEXTRANK_HPP
 
+#ifndef IOSTREAM
+#define IOSTREAM
+#include <iostream>
+#endif
+
+#ifndef STRING
+#define STRING
 #include <string>
+#endif
+
+#ifndef VECTOR
+#define VECTOR
 #include <vector>
+#endif
+
+#ifndef CMATH
+#define CMATH
 #include <cmath>
+#endif
+
+#ifndef ALGORITHM
+#define ALGORITHM
 #include <algorithm>
+#endif
+
+
 
 struct TextRank_Node {
     double score;

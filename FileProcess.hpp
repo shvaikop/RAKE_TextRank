@@ -1,9 +1,20 @@
 #ifndef PROJECT_FILEPROCESS_HPP
 #define PROJECT_FILEPROCESS_HPP
 
-#include <concepts>
+#ifndef IOSTREAM
+#define IOSTREAM
 #include <iostream>
+#endif
+
+#ifndef FSTREAM
+#define FSTREAM
 #include <fstream>
+#endif
+
+#ifndef CONCEPTS
+#define CONCEPTS
+#include <concepts>
+#endif
 
 namespace FileProcess {
     template<typename T>

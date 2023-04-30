@@ -1,8 +1,36 @@
+#ifndef IOSTREAM
+#define IOSTREAM
 #include <iostream>
+#endif
+
+#ifndef FSTREAM
+#define FSTREAM
 #include <fstream>
+#endif
+
+#ifndef STRING
+#define STRING
 #include <string>
+#endif
+
+#ifndef VECTOR
+#define VECTOR
 #include <vector>
+#endif
+
+#ifndef FILESYSTEM
+#define FILESYSTEM
 #include <filesystem>
+#endif
+
+#ifndef UNORDERED_SET
+#define UNORDERED_SET
+#include <unordered_set>
+#endif
+
+
+
+//#include <boost/program_options.hpp>
 
 
 #include "FileProcess.hpp"
@@ -66,9 +94,9 @@ int main(int argc, char* argv[]) {
     auto stop_words = TextProcess::load_stop_words(STOP_WORDS_PATH);
 //    auto phrases = TextProcess::read_text_phrases(file_in, stop_chars, stop_words);
 
-    auto sentences = TextProcess::split_into_sentences(file_in, sent_end_chars);
+    auto sentences = TextProcess::parse_text_sentences(file_in, sent_end_chars);
     auto processed_sentences = TextProcess::process_sentences(sentences, stop_chars, stop_words);
-    TextRank tk(sentences, processed_sentences);
+    TextRank tk(std::move(sentences), processed_sentences);
     auto summary = tk.get_summary(0.55);
 
 //    RAKE rk(std::move(phrases));

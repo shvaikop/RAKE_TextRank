@@ -1,14 +1,46 @@
 #ifndef PROJECT_RAKE_HPP
 #define PROJECT_RAKE_HPP
 
+#ifndef IOSTREAM
+#define IOSTREAM
 #include <iostream>
+#endif
+
+#ifndef FSTREAM
+#define FSTREAM
 #include <fstream>
+#endif
+
+#ifndef STRING
+#define STRING
 #include <string>
+#endif
+
+#ifndef VECTOR
+#define VECTOR
 #include <vector>
-#include <map>
+#endif
+
+#ifndef UNORDERED_SET
+#define UNORDERED_SET
 #include <unordered_set>
+#endif
+
+#ifndef MAP
+#define MAP
+#include <map>
+#endif
+
+#ifndef SET
+#define SET
 #include <set>
+#endif
+
+#ifndef FUNCTIONAL
+#define FUNCTIONAL
 #include <functional>
+#endif
+
 
 // Class that handles word scores
 class Rake_WordScore {

@@ -1,10 +1,30 @@
 #ifndef PROJECT_TEXTPREPROCESS_HPP
 #define PROJECT_TEXTPREPROCESS_HPP
 
+#ifndef UNORDERED_SET
+#define UNORDERED_SET
 #include <unordered_set>
+#endif
+
+#ifndef FILESYSTEM
+#define FILESYSTEM
 #include <filesystem>
+#endif
+
+#ifndef IOSTREAM
+#define IOSTREAM
+#include <iostream>
+#endif
+
+#ifndef FSTREAM
+#define FSTREAM
 #include <fstream>
+#endif
+
+#ifndef VECTOR
+#define VECTOR
 #include <vector>
+#endif
 
 #include "FileProcess.hpp"
 
