@@ -20,6 +20,7 @@ class TextRank {
     std::vector<TextRank_Node> graph_;
     phraseVector tokenized_sentences_;
     strVec sentences_;
+    bool calculated = false;
 
 public:
     // Constructor that exploits forwarding references
@@ -148,8 +149,12 @@ private:
 
     // Returns summary of specified number of sentences
     strVec get_summary_priv(size_t len) {
-        iterate();
-        std::sort(graph_.begin(), graph_.end(), custom_comp);   // sort graph_ by scores
+        if (!calculated){
+            iterate();
+            std::sort(graph_.begin(), graph_.end(), custom_comp);   // sort graph_ by scores
+            calculated = true;
+        }
+
         std::vector<size_t> summary_sents_i;    // sentence indices
         summary_sents_i.reserve(len);
         for (size_t i = 0; i < len; i++) {      // store indices of sentences that should be in the summary
