@@ -10,6 +10,7 @@
 #include <set>
 #include <functional>
 
+// Class that handles word scores
 class Rake_WordScore {
     using type = unsigned int;
     type freq = 0;
@@ -35,6 +36,7 @@ class RAKE {
 
     std::map<std::string, Rake_WordScore> word_scores_;
     std::vector< std::pair<strVec, double> > phrases_with_scores_;
+    bool calculated = false;
 
 public:
     // Constructor accepting phrases by l-value reference, and copying them
@@ -45,7 +47,7 @@ public:
         }
     }
 
-    // Constructor accespting phrases by r-value reference, moving them
+    // Constructor accepting phrases by r-value reference, moving them
     // Original phrases moved
     explicit RAKE(phraseVector&& phrases) {
         for (auto&& phrase : phrases) {
@@ -54,19 +56,42 @@ public:
     }
 
     // Returns a percentages, provided by the user, of all the phrases
-    phraseVector get_key_phrases(double percent = (double)1 / 3) {
-        set_scores();
-        rem_duplicates_sort();
+    phraseVector get_key_phrases(double percent = static_cast<double>(1) / 3) {
+        if (percent < 0 || percent > 1) {
+            throw std::runtime_error("Error: Percentage of phrases included in the summary should be between 0 and 1!");
+        }
+        size_t num = static_cast<size_t>(static_cast<double>(phrases_with_scores_.size()) * percent);
+        return get_key_phrases_priv(num);
+    }
+
+    // Returns the top len_i phrases
+    phraseVector get_key_phrases(int len_i) {
+        if (len_i < 0) {
+            throw std::runtime_error("Error: Length of summary cannot be negative!");
+        }
+        size_t len = static_cast<size_t>(len_i);
+        if (len > phrases_with_scores_.size()) {
+            std::cerr << "Warning: Number of phrases requested in the summary is greater than the total number of phrases" << std::endl;
+        }
+        len = std::min(len, phrases_with_scores_.size());
+        return get_key_phrases_priv(len);
+    }
+
+private:
+    phraseVector get_key_phrases_priv(size_t num) {
+        if (!calculated) {
+            set_scores();
+            rem_duplicates_sort();
+            calculated = true;
+        }
 
         phraseVector result;
-        size_t num = size_t((double)phrases_with_scores_.size() * percent);
         for (size_t i = 0; i < num; i++){
             result.push_back(phrases_with_scores_[i].first);
         }
         return result;
     }
 
-private:
     void set_scores() {
         // score each word
         for (const auto& pair_phrase_score : phrases_with_scores_) {
@@ -113,9 +138,6 @@ private:
                   phr_score_set.end(),
                   std::back_inserter(phrases_with_scores_));
     }
-
-    //TODO
-    // Add error checking
 };
 
 #endif //PROJECT_RAKE_HPP

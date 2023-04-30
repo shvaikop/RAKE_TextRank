@@ -1,7 +1,6 @@
 #ifndef PROJECT_TEXTPREPROCESS_HPP
 #define PROJECT_TEXTPREPROCESS_HPP
 
-//#include <iostream>
 #include <unordered_set>
 #include <filesystem>
 #include <fstream>
@@ -44,7 +43,7 @@ namespace TextProcess {
         return stop_words;
     }
 
-    std::vector<std::vector<std::string>> read_text_phrases(std::istream& in_stream, const std::unordered_set<char>& stop_chars, const std::unordered_set<std::string>& stop_words) {
+    std::vector<std::vector<std::string>> parse_text_phrases(std::istream& in_stream, const std::unordered_set<char>& stop_chars, const std::unordered_set<std::string>& stop_words) {
         std::vector<std::vector<std::string>> phrases;
         std::vector<std::string> phrase;
         std::string word;
@@ -84,7 +83,7 @@ namespace TextProcess {
             }
 
             else {
-                // TODO throw exception
+                throw std::runtime_error("Unexpected situation during parsing text into phrases occured!");
             }
         }
 
@@ -99,7 +98,7 @@ namespace TextProcess {
     }
 
     // Function that splits a text into sentences
-    std::vector<std::string> split_into_sentences(std::istream& in_stream, const std::unordered_set<char>& sent_end_chars) {
+    std::vector<std::string> parse_text_sentences(std::istream& in_stream, const std::unordered_set<char>& sent_end_chars) {
         std::vector<std::string> sentences;
         std::string sentence;
         char c;
@@ -127,7 +126,7 @@ namespace TextProcess {
     }
 
     // split a string (sentence) into a vector of words, removing stop_chars, stop_words
-    strVec proces_sentence(const std::string& sentence_in, const std::unordered_set<char>& stop_chars,
+    strVec process_sentence(const std::string& sentence_in, const std::unordered_set<char>& stop_chars,
                            const std::unordered_set<std::string>& stop_words) {
         strVec sentence_out;
         std::string word;
@@ -158,7 +157,7 @@ namespace TextProcess {
                                    const std::unordered_set<std::string>& stop_words) {
         phraseVector result;
         for (auto& sent_in : sentences) {
-            result.push_back(proces_sentence(sent_in, stop_chars, stop_words));
+            result.push_back(process_sentence(sent_in, stop_chars, stop_words));
         }
         return result;
     }
