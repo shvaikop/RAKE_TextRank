@@ -33,7 +33,7 @@ public:
     }
 
     // Returns summary of length calculated by percentage of the overall length of the text
-    strVec get_summary(double percent = (double)1 / 3) {
+    strVec get_summary(double percent = static_cast<double>(1) / 3) {
         if (percent < 0 || percent > 1) {
             throw std::runtime_error("Error: Percentage of sentences included in the summary should be between 0 and 1!");
         }
@@ -48,11 +48,11 @@ public:
         if (len_i < 0) {
             throw std::runtime_error("Error: Length of summary cannot be negative!");
         }
-        size_t len = (size_t) len_i;
+        size_t len = static_cast<size_t>(len_i);
         if (len > sentences_.size()) {
             std::cerr << "Warning: Length of summary requested is longer than the text." << std::endl;
         }
-        len = std::min((size_t)len, sentences_.size());
+        len = std::min(len, sentences_.size());
         return get_summary_priv(len);
     }
 
@@ -89,7 +89,7 @@ private:
     void construct_graph() {
         size_t size = tokenized_sentences_.size();
         graph_.reserve(size);
-        double init_score = (double)1 / (double)size;
+        double init_score = static_cast<double>(1) / static_cast<double>(size);
         for (size_t i = 0; i < size; i++) {
             graph_.emplace_back();
             graph_[i].sent_index = i;
