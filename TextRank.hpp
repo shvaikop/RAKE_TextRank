@@ -22,12 +22,17 @@ class TextRank {
     strVec sentences_;
 
 public:
-    TextRank(strVec& sentences, phraseVector& tokenized_sentences) {
-        tokenized_sentences_ = std::move(tokenized_sentences);
-        sentences_ = std::move(sentences);
+    // Constructor that exploits forwarding references
+    // Enables the user to provide either an r-value or an l-value for both parameters
+    // Avoids multiples constructor overloads
+    template <typename StrVec, typename PhraseVector>
+    TextRank(StrVec&& sentences, PhraseVector&& tokenized_sentences) {
+        tokenized_sentences_ = std::forward<PhraseVector>(tokenized_sentences);
+        sentences_ = std::forward<StrVec>(sentences);
         construct_graph();
     }
 
+    // Returns summary of length calculated by percentage of the overall length of the text
     strVec get_summary(double percent = (double)1 / 3) {
         if (percent < 0 || percent > 1) {
             throw std::runtime_error("Error: Percentage of sentences included in the summary should be between 0 and 1!");
@@ -36,14 +41,18 @@ public:
         return get_summary_priv(len);
     }
 
-    strVec get_summary(size_t len) {
-        if (len < 0) {
+    // Returns summary with specified number of sentences
+    // Get the parameter as int in case the user inputs a negative number
+    // Converts it to size_t after necessary checks
+    strVec get_summary(int len_i) {
+        if (len_i < 0) {
             throw std::runtime_error("Error: Length of summary cannot be negative!");
         }
+        size_t len = (size_t) len_i;
         if (len > sentences_.size()) {
             std::cerr << "Warning: Length of summary requested is longer than the text." << std::endl;
         }
-        len = std::min(len, sentences_.size());
+        len = std::min((size_t)len, sentences_.size());
         return get_summary_priv(len);
     }
 
