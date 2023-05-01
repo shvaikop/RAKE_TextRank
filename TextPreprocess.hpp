@@ -182,12 +182,18 @@ namespace TextProcess {
         return result;
     }
 
-    void custom_print(const std::vector< std::vector<std::string> >& inpt) {
-        for (const auto& phrase: inpt) {
+    void output_to_stream(std::ostream& out_stream, const std::vector< std::vector<std::string> >& str_matrix) {
+        for (const auto& phrase: str_matrix) {
             for (const auto& word: phrase) {
-                std::cout << word << " ";
+                out_stream << word << " ";
             }
-            std::cout << std::endl;
+            out_stream << std::endl;
+        }
+    }
+
+    void output_to_stream(std::ostream& out_stream, const std::vector< std::string>& str_vec) {
+        for (const auto& str: str_vec) {
+            out_stream << str << std::endl;
         }
     }
 }
