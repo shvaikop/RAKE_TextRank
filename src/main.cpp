@@ -46,7 +46,7 @@ constexpr char PATH_SEP = std::filesystem::path::preferred_separator;
 const std::string STOP_CHARS_PATH = "resources" + std::string(1, PATH_SEP) + "stopchars.txt";
 const std::string STOP_WORDS_PATH = "resources" + std::string(1, PATH_SEP) + "stopwords.txt";
 
-const std::unordered_set<char> sent_end_chars = {'.', '!', '?', ';'};
+const std::unordered_set<char> sent_end_chars = {'.', '!', '?', ';', ':'};
 
 enum Length_Mode {DEFAULT, LENGTH, PERCENT};
 
