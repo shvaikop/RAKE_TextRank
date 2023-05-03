@@ -28,4 +28,11 @@ g++ -std=c++20 src/main.cpp src/Rake.cpp src/TextPreprocess.cpp src/TextRank.cpp
 RAKE is a keyword extraction algorithm that is based on splitting the intput text into phrases, scoring each word based on its occurance frequency as well as its co-occurance with other words. Phrase scores are calculated by summing the scores of the words in the phrases. Phrase score corresponds to its importance.
 RAKE is a simple and efficient algorithm which can be used to get the key phrases in a large text quickly although it does not always produce the best results.
 ### TextRank
-TextRank is an algorithm that is based on Google's PageRank algorithm for scoring web pages by importance. It splits the text into sentences and builds a graph where sentences are the nodes and edges correspond to similarity between sentences. There are various formulas for calculating the similarity between sentences. The formula that I used: 
+TextRank is an algorithm that is based on Google's PageRank algorithm for scoring web pages by importance. It splits the text into sentences and builds a graph where sentences are the nodes and edges correspond to similarity between sentences. There are various formulas for calculating the similarity between sentences. 
+The formula that I used: 
+
+![sentence_sim](sentence_sim.png)
+
+The main idea of the algorithm is to rank sentences evenly initially and then iteratively update the scores based on the sentence similarity graph and after some iteration the scores will converge. The update happens according to this formula:
+
+![text-rank](text_rank_formula.png)
