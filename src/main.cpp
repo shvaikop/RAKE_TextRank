@@ -113,8 +113,8 @@ int main(int argc, char* argv[]) {
     boost::program_options::options_description desc("Allowed options");
     desc.add_options()
             ("help", "produce help message")
-            ("input_file", boost::program_options::value<std::string>(&input_file), "set input file")
-            ("output_file", boost::program_options::value<std::string>(&output_file), "set output file")
+            ("input-file", boost::program_options::value<std::string>(&input_file), "set input file")
+            ("output-file", boost::program_options::value<std::string>(&output_file), "set output file")
             ("rake", "produce key phrases using RAKE")
             ("text-rank", "produce a summary using TextRank")
             ("length", boost::program_options::value<int>(), "number of lexical units included in the summary")
