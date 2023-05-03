@@ -35,4 +35,7 @@ The formula that I used:
 
 The main idea of the algorithm is to rank sentences evenly initially and then iteratively update the scores based on the sentence similarity graph and after some iteration the scores will converge. The update happens according to this formula:
 
-![text-rank](text_rank_formula.png)
+![text-rank](textrank_formula.png)
+
+TextRank provides an actual summary made up of sentences which is much nicer to read than just keywords. Since the top ranked sentences are ordered in their original order, in many cases the summary is readable however, sometimes the sentences in the the summary jump from one topic to another. However, this is expected since the algorithm does not make any sense of the text. 
+TextRank is more computationally heavy however, it still works nicely for reasonably long articles. The scores converge in around 30-40 iterations in general.
