@@ -39,3 +39,28 @@ The main idea of the algorithm is to rank sentences evenly initially and then it
 
 TextRank provides an actual summary made up of sentences which is much nicer to read than just keywords. Since the top ranked sentences are ordered in their original order, in many cases the summary is readable however, sometimes the sentences in the the summary jump from one topic to another. However, this is expected since the algorithm does not make any sense of the text. 
 TextRank is more computationally heavy however, it still works nicely for reasonably long articles. The scores converge in around 30-40 iterations in general.
+
+## Testing
+Folder *inputs* includes some sample texts to test this software. 
+- `article.txt` : A newspaper article about hackers
+- `input2.txt` : Website content about text sumamrization
+- `text_rank_paper_intro.txt` : Introduction of an academic paper
+- `input_mars_book.txt` : A relatively large book containing almost 10,000 lines
+
+### Sample usages
+```console
+./project --input-file inputs/input2.txt  --rake --length 10
+```
+```console
+./project --input-file inputs/article.txt --output-file article_out.txt --text-rank --percent 0.13
+```
+```console
+./project --input-file inputs/article.txt --output-file article_out.txt --text-rank --percent 0.13
+```
+```console
+./project --input-file inputs/input_mars_book.txt --text-rank --length 20
+```
+```console
+./project --input-file inputs/text_rank_paper_intro.txt --text-rank --length 4
+```
+
